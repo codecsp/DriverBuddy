@@ -7,9 +7,19 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import com.android.internal.telephony.ITelephony;
 
+
+
 public class IncomingCallReceiver extends BroadcastReceiver {
+public static int cntt=0;
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -17,11 +27,6 @@ public class IncomingCallReceiver extends BroadcastReceiver {
         try {
             String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
             String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
-
-
-
-
-
 
             if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))
             {
@@ -33,12 +38,18 @@ public class IncomingCallReceiver extends BroadcastReceiver {
                     telephonyService = (ITelephony) m.invoke(tm);
 
                     if ((number != null)) {
-                        telephonyService.endCall();
-                        //Toast.makeText(context, "Ending the call from: " + number, Toast.LENGTH_SHORT).show();
+                        if(cntt>3)
+                        {
 
-                        SmsManager smsManager = SmsManager.getDefault();
-                        smsManager.sendTextMessage(number, null, "[DRIVE SAFE] I am Driving. I will contact you when possible.", null, null);
+                        }
+                        else
+                        {
+                            telephonyService.endCall();
+                            SmsManager smsManager = SmsManager.getDefault();
+                            smsManager.sendTextMessage(number, null, "[DRIVE SAFE] I am Driving. I will contact you when possible.", null, null);
 
+                        }
+                        cntt++;
                     }
 
                 } catch (Exception e) {
